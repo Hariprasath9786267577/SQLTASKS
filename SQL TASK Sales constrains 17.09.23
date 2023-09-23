@@ -1,0 +1,61 @@
+-- Create the schema
+CREATE SCHEMA sales;
+
+-- Create the Customer table
+CREATE TABLE sales.Customer (
+    CustomerID INT PRIMARY KEY,
+    Email VARCHAR(30) UNIQUE NOT NULL,
+    Address TEXT,
+    Phone CHAR(10) NOT NULL,
+    Age SMALLINT NOT NULL,
+    DOB DATE
+);
+
+-- Create the Products table
+CREATE TABLE sales.Products (
+    ProductID INT PRIMARY KEY,
+    ProductName VARCHAR(255) NOT NULL,
+    Price DECIMAL(10, 2) CHECK (Price > 0),
+    Description TEXT,
+    CategoryOrProductType VARCHAR(255) NOT NULL
+);
+
+-- Create the Orders table
+CREATE TABLE sales.Orders (
+    OrderID INT PRIMARY KEY AUTO_INCREMENT,
+    CustomerID INT,
+    ProductID INT,
+    OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Status VARCHAR(20),
+    ShippingAddress TEXT,
+    PaymentMethod VARCHAR(30),
+    PaymentStatus VARCHAR(20),
+    ShippingMethod VARCHAR(30),
+    TrackingNumber VARCHAR(50),
+    Notes TEXT,
+    FOREIGN KEY (CustomerID) REFERENCES sales.Customer(CustomerID),
+    FOREIGN KEY (ProductID) REFERENCES sales.Products(ProductID)
+);
+
+-- Insert sample data into the Customer table
+INSERT INTO sales.Customer (CustomerID, Email, Address, Phone, Age, DOB)
+VALUES
+    (1, 'customer1@gmail.com', '123 east st, mast, US1', '1234567890', 30, '1993-01-15'),
+    (2, 'customer2@gmail.com', '456 west st, huit,UK2', '9876543210', 25, '1998-05-22'),
+    (3, 'customer3@gmail.com', '789 north St, raer, Uae3', '5551112222', 35, '1987-11-08');
+
+-- Insert sample data into the Products table
+INSERT INTO sales.Products (ProductID, ProductName, Price, Description, CategoryOrProductType)
+VALUES
+    (1, 'h&s', 19.99, 'A high-quality product for everyday use.', 'Electronics'),
+    (2, 'hh', 29.99, 'A versatile product suitable for various applications.', 'Home & Garden'),
+    (3, 'ra', 9.99, 'An affordable option for budget-conscious customers.', 'Electronics');
+
+-- Insert sample data into the Orders table
+INSERT INTO sales.Orders (CustomerID, ProductID, Status, ShippingAddress, PaymentMethod, PaymentStatus, ShippingMethod, TrackingNumber, Notes)
+VALUES
+    (1, 1, 'Processing', '456 west st, huit,UK2', 'Credit Card', 'Paid', 'Express Shipping', 'ABC123456', 'Notes for Order 1'),
+    (2, 2, 'Shipped', '789 north St, raer, Uae3', 'PayPal', 'Pending', 'Standard Shipping', 'XYZ987654', 'Notes for Order 2');
+-- Adding a foreign key constraint to establish the relationship
+ALTER TABLE sales.Orders
+ADD CONSTRAINT fk_CustomerID FOREIGN KEY (CustomerID) REFERENCES sales.Customer(CustomerID);
